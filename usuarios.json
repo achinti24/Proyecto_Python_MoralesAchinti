@@ -1,0 +1,12 @@
+[
+    {
+        "correo": "admin@campus.com",
+        "password": "1234",
+        "rol": "coordinador"
+    },
+    {
+        "correo": "trainer1@campus.com",
+        "password": "abcd",
+        "rol": "trainer"
+    }
+]
