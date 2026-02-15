@@ -19,11 +19,52 @@
             "direccion": "matanza",
             "acudiente": "heidy",
             "telefono": "320876543",
-            "estado": "En proceso de ingreso",
-            "riesgo": "Bajo",
-            "ruta": null,
+            "estado": "retirado",
+            "riesgo": "Alto",
+            "ruta": "Java",
             "notas": {
-            }
+                "fundamentos": {
+                    "teoria": 40.0,
+                    "practica": 30.0,
+                    "quizes": 20.0,
+                    "nota_final": 32.0,
+                    "aprobado": false
+                },
+                "web": null,
+                "programacion_formal": null,
+                "bases_datos": null,
+                "backend": null
+            },
+            "examen_inicial": {
+                "teorica": 69.0,
+                "practica": 70.0,
+                "promedio": 69.5
+            },
+            "jornada": "mañana"
+        },
+        {
+            "id": "4321",
+            "nombre": "julian",
+            "apellidos": "pinto",
+            "direccion": "calle 20",
+            "acudiente": "oscar pinto",
+            "telefono": "315678954",
+            "estado": "Cursando",
+            "riesgo": "Bajo",
+            "ruta": "Java",
+            "notas": {
+                "fundamentos": null,
+                "web": null,
+                "programacion_formal": null,
+                "bases_datos": null,
+                "backend": null
+            },
+            "examen_inicial": {
+                "teorica": 70.0,
+                "practica": 90.0,
+                "promedio": 80.0
+            },
+            "jornada": "mañana"
         }
     ]
 }

@@ -1,153 +1,154 @@
 {
-  "rutas": [
-    {
-      "id": "R1",
-      "nombre": "NodeJS",
-      "capacidad_maxima": 33,
-      "campers_asignados": [],
-      "trainer_asignado": null,
-      "salon": null,
-      "horario": null,
-      "fecha_inicio": null,
-      "fecha_fin": null,
-      "modulos": {
-        "fundamentos": {
-          "descripcion": "Algoritmia, PSeInt y Python",
-          "estadisticas": {
-            "aprobados": 0,
-            "reprobados": 0
-          }
+    "rutas": [
+        {
+            "id": "R1",
+            "nombre": "NodeJS",
+            "capacidad_maxima": 33,
+            "campers_asignados": [],
+            "trainer_asignado": null,
+            "salon": null,
+            "horario": null,
+            "fecha_inicio": null,
+            "fecha_fin": null,
+            "modulos": {
+                "fundamentos": {
+                    "descripcion": "Algoritmia, PSeInt y Python",
+                    "estadisticas": {
+                        "aprobados": 0,
+                        "reprobados": 0
+                    }
+                },
+                "web": {
+                    "descripcion": "HTML, CSS y Bootstrap",
+                    "estadisticas": {
+                        "aprobados": 0,
+                        "reprobados": 0
+                    }
+                },
+                "programacion_formal": {
+                    "descripcion": "JavaScript",
+                    "estadisticas": {
+                        "aprobados": 0,
+                        "reprobados": 0
+                    }
+                },
+                "bases_datos": {
+                    "principal": "MongoDB",
+                    "alternativo": "MySQL",
+                    "estadisticas": {
+                        "aprobados": 0,
+                        "reprobados": 0
+                    }
+                },
+                "backend": {
+                    "tecnologias": "NodeJS, Express",
+                    "estadisticas": {
+                        "aprobados": 0,
+                        "reprobados": 0
+                    }
+                }
+            }
         },
-        "web": {
-          "descripcion": "HTML, CSS y Bootstrap",
-          "estadisticas": {
-            "aprobados": 0,
-            "reprobados": 0
-          }
+        {
+            "id": "R2",
+            "nombre": "Java",
+            "capacidad_maxima": 33,
+            "campers_asignados": [
+                "321",
+                "4321"
+            ],
+            "trainer_asignado": "Edwin Salas",
+            "salon": "Artemis",
+            "horario": "6am-10am",
+            "fecha_inicio": "15/02/2026",
+            "fecha_fin": "15/12/2026",
+            "modulos": {
+                "fundamentos": {
+                    "descripcion": "Algoritmia, PSeInt y Python",
+                    "estadisticas": {
+                        "aprobados": 0,
+                        "reprobados": 1
+                    }
+                },
+                "web": {
+                    "descripcion": "HTML, CSS y Bootstrap",
+                    "estadisticas": {
+                        "aprobados": 0,
+                        "reprobados": 0
+                    }
+                },
+                "programacion_formal": {
+                    "descripcion": "Java",
+                    "estadisticas": {
+                        "aprobados": 0,
+                        "reprobados": 0
+                    }
+                },
+                "bases_datos": {
+                    "principal": "PostgreSQL",
+                    "alternativo": "MySQL",
+                    "estadisticas": {
+                        "aprobados": 0,
+                        "reprobados": 0
+                    }
+                },
+                "backend": {
+                    "tecnologias": "Spring Boot",
+                    "estadisticas": {
+                        "aprobados": 0,
+                        "reprobados": 0
+                    }
+                }
+            }
         },
-        "programacion_formal": {
-          "descripcion": "JavaScript",
-          "estadisticas": {
-            "aprobados": 0,
-            "reprobados": 0
-          }
-        },
-        "bases_datos": {
-          "principal": "MongoDB",
-          "alternativo": "MySQL",
-          "estadisticas": {
-            "aprobados": 0,
-            "reprobados": 0
-          }
-        },
-        "backend": {
-          "tecnologias": "NodeJS, Express",
-          "estadisticas": {
-            "aprobados": 0,
-            "reprobados": 0
-          }
+        {
+            "id": "R3",
+            "nombre": "NetCore",
+            "capacidad_maxima": 33,
+            "campers_asignados": [],
+            "trainer_asignado": null,
+            "salon": null,
+            "horario": null,
+            "fecha_inicio": null,
+            "fecha_fin": null,
+            "modulos": {
+                "fundamentos": {
+                    "descripcion": "Algoritmia, PSeInt y Python",
+                    "estadisticas": {
+                        "aprobados": 0,
+                        "reprobados": 0
+                    }
+                },
+                "web": {
+                    "descripcion": "HTML, CSS y Bootstrap",
+                    "estadisticas": {
+                        "aprobados": 0,
+                        "reprobados": 0
+                    }
+                },
+                "programacion_formal": {
+                    "descripcion": "C#",
+                    "estadisticas": {
+                        "aprobados": 0,
+                        "reprobados": 0
+                    }
+                },
+                "bases_datos": {
+                    "principal": "SQL Server",
+                    "alternativo": "PostgreSQL",
+                    "estadisticas": {
+                        "aprobados": 0,
+                        "reprobados": 0
+                    }
+                },
+                "backend": {
+                    "tecnologias": "NetCore",
+                    "estadisticas": {
+                        "aprobados": 0,
+                        "reprobados": 0
+                    }
+                }
+            }
         }
-      }
-    },
-
-    {
-      "id": "R2",
-      "nombre": "Java",
-      "capacidad_maxima": 33,
-      "campers_asignados": [],
-      "trainer_asignado": null,
-      "salon": null,
-      "horario": null,
-      "fecha_inicio": null,
-      "fecha_fin": null,
-      "modulos": {
-        "fundamentos": {
-          "descripcion": "Algoritmia, PSeInt y Python",
-          "estadisticas": {
-            "aprobados": 0,
-            "reprobados": 0
-          }
-        },
-        "web": {
-          "descripcion": "HTML, CSS y Bootstrap",
-          "estadisticas": {
-            "aprobados": 0,
-            "reprobados": 0
-          }
-        },
-        "programacion_formal": {
-          "descripcion": "Java",
-          "estadisticas": {
-            "aprobados": 0,
-            "reprobados": 0
-          }
-        },
-        "bases_datos": {
-          "principal": "PostgreSQL",
-          "alternativo": "MySQL",
-          "estadisticas": {
-            "aprobados": 0,
-            "reprobados": 0
-          }
-        },
-        "backend": {
-          "tecnologias": "Spring Boot",
-          "estadisticas": {
-            "aprobados": 0,
-            "reprobados": 0
-          }
-        }
-      }
-    },
-
-    {
-      "id": "R3",
-      "nombre": "NetCore",
-      "capacidad_maxima": 33,
-      "campers_asignados": [],
-      "trainer_asignado": null,
-      "salon": null,
-      "horario": null,
-      "fecha_inicio": null,
-      "fecha_fin": null,
-      "modulos": {
-        "fundamentos": {
-          "descripcion": "Algoritmia, PSeInt y Python",
-          "estadisticas": {
-            "aprobados": 0,
-            "reprobados": 0
-          }
-        },
-        "web": {
-          "descripcion": "HTML, CSS y Bootstrap",
-          "estadisticas": {
-            "aprobados": 0,
-            "reprobados": 0
-          }
-        },
-        "programacion_formal": {
-          "descripcion": "C#",
-          "estadisticas": {
-            "aprobados": 0,
-            "reprobados": 0
-          }
-        },
-        "bases_datos": {
-          "principal": "SQL Server",
-          "alternativo": "PostgreSQL",
-          "estadisticas": {
-            "aprobados": 0,
-            "reprobados": 0
-          }
-        },
-        "backend": {
-          "tecnologias": "NetCore",
-          "estadisticas": {
-            "aprobados": 0,
-            "reprobados": 0
-          }
-        }
-      }
-    }
-  ]
+    ]
 }
