@@ -4,7 +4,7 @@ ARCHIVO_CAMPERS = "campers.json"
 ARCHIVO_RUTAS = "rutas.json"
 ARCHIVO_TRAINERS = "TRAINERS.json"
 
-# ==================== FUNCIONES AUXILIARES ====================
+# --------------------------------- FUNCIONES AUXILIARES ---------------------------------
 
 def cargar_campers():
     try:
@@ -36,22 +36,49 @@ def cargar_trainers():
         return {"profesores": []}
 
 def calcular_nota_final(teoria, practica, quizes):
-    """
-    Fórmula: 30% teoría + 60% práctica + 10% quizes
-    """
     nota_final = (teoria * 0.3) + (practica * 0.6) + (quizes * 0.1)
     return round(nota_final, 2)
 
-# ==================== VER MIS RUTAS Y CAMPERS ====================
+# --------------------------------- MENU PRINCIPAL TRAINER ---------------------------------
+
+def menu_trainer(nombre_trainer):
+    opcion = ""
+    
+    while opcion != "5":
+        print("----------------------------------------")
+        print(f"     MENU TRAINER - {nombre_trainer}")
+        print("----------------------------------------")
+        print("1. Ver mis rutas y campers")
+        print("2. Registrar notas de modulo")
+        print("3. Ver notas de un camper")
+        print("4. Ver campers en riesgo alto")
+        print("5. Salir")
+        print("----------------------------------------")
+        
+        opcion = input("Seleccione una opcion: ")
+        
+        if opcion == "1":
+            ver_mis_rutas(nombre_trainer)
+        elif opcion == "2":
+            registrar_notas_modulo(nombre_trainer)
+        elif opcion == "3":
+            ver_notas_camper()
+        elif opcion == "4":
+            listar_campers_riesgo_alto(nombre_trainer)
+        elif opcion == "5":
+            print("Saliendo del modulo trainer...")
+        else:
+            print("Opcion invalida")
+
+# --------------------------------- 1. VER MIS RUTAS Y CAMPERS ---------------------------------
 
 def ver_mis_rutas(nombre_trainer):
-    print(f"====== MIS RUTAS Y CAMPERS ======")
+    print("------ MIS RUTAS Y CAMPERS ------")
     
     datos_trainers = cargar_trainers()
     datos_campers = cargar_campers()
     datos_rutas = cargar_rutas()
     
-    # Buscar el trainer
     trainer_encontrado = None
     for t in datos_trainers["profesores"]:
         if t["nombre"].lower() == nombre_trainer.lower():
@@ -59,14 +86,13 @@ def ver_mis_rutas(nombre_trainer):
             break
     
     if not trainer_encontrado:
-        print(" Trainer no encontrado")
+        print("Trainer no encontrado")
         return
     
     print(f"Trainer: {trainer_encontrado['nombre']}")
     print(f"Horario: {trainer_encontrado['horario']}")
     print(f"Rutas asignadas: {', '.join(trainer_encontrado['rutas'])}")
     
-    # Buscar rutas donde este trainer está asignado
     rutas_activas = []
     for ruta in datos_rutas["rutas"]:
         if ruta["trainer_asignado"] == trainer_encontrado["nombre"]:
@@ -76,10 +102,9 @@ def ver_mis_rutas(nombre_trainer):
         print("No tienes rutas activas con campers asignados")
         return
     
-    # Mostrar información de cada ruta
     for ruta in rutas_activas:
         print(f"--- RUTA: {ruta['nombre']} ---")
-        print(f"Salón: {ruta['salon']}")
+        print(f"Salon: {ruta['salon']}")
         print(f"Horario: {ruta['horario']}")
         print(f"Fecha inicio: {ruta['fecha_inicio']}")
         print(f"Fecha fin: {ruta['fecha_fin']}")
@@ -92,16 +117,15 @@ def ver_mis_rutas(nombre_trainer):
                     if c["id"] == id_camper:
                         print(f"  - {c['nombre']} {c['apellidos']} (ID: {c['id']}) - Riesgo: {c['riesgo']}")
 
-# ==================== REGISTRAR NOTAS DE MÓDULOS ====================
+# --------------------------------- 2. REGISTRAR NOTAS DE MODULO ---------------------------------
 
 def registrar_notas_modulo(nombre_trainer):
-    print("====== REGISTRAR NOTAS POR MÓDULO ======")
+    print("------ REGISTRAR NOTAS POR MODULO ------")
     
     datos_campers = cargar_campers()
     datos_rutas = cargar_rutas()
     datos_trainers = cargar_trainers()
     
-    # Buscar el trainer
     trainer_encontrado = None
     for t in datos_trainers["profesores"]:
         if t["nombre"].lower() == nombre_trainer.lower():
@@ -112,17 +136,15 @@ def registrar_notas_modulo(nombre_trainer):
         print("Trainer no encontrado")
         return
     
-    # Buscar rutas donde este trainer está asignado
     rutas_del_trainer = []
     for ruta in datos_rutas["rutas"]:
         if ruta["trainer_asignado"] == trainer_encontrado["nombre"]:
             rutas_del_trainer.append(ruta)
     
     if not rutas_del_trainer:
-        print(" No tienes rutas activas con campers")
+        print("No tienes rutas activas con campers")
         return
     
-    # Mostrar campers cursando en las rutas del trainer
     campers_disponibles = []
     for ruta in rutas_del_trainer:
         for id_camper in ruta["campers_asignados"]:
@@ -140,7 +162,6 @@ def registrar_notas_modulo(nombre_trainer):
     
     id_camper = input("Ingrese el ID del camper: ")
     
-    # Buscar camper
     camper = None
     for c in campers_disponibles:
         if c["id"] == id_camper:
@@ -148,18 +169,17 @@ def registrar_notas_modulo(nombre_trainer):
             break
     
     if not camper:
-        print("Camper no encontrado o no está en tus rutas")
+        print("Camper no encontrado o no esta en tus rutas")
         return
     
-    # Mostrar módulos
-    print("--- MÓDULOS DISPONIBLES ---")
+    print("--- MODULOS DISPONIBLES ---")
     print("1. Fundamentos (Algoritmia, PSeInt y Python)")
     print("2. Web (HTML, CSS y Bootstrap)")
-    print("3. Programación Formal (JavaScript/Java/C#)")
+    print("3. Programacion Formal (JavaScript/Java/C#)")
     print("4. Bases de Datos (MongoDB/PostgreSQL/SQL Server)")
     print("5. Backend (NodeJS/Spring Boot/NetCore)")
     
-    opcion_modulo = input("Seleccione el módulo: ")
+    opcion_modulo = input("Seleccione el modulo: ")
     
     modulos = {
         "1": "fundamentos",
@@ -170,16 +190,15 @@ def registrar_notas_modulo(nombre_trainer):
     }
     
     if opcion_modulo not in modulos:
-        print("Opción inválida")
+        print("Opcion invalida")
         return
     
     modulo_seleccionado = modulos[opcion_modulo]
     
-    # Verificar si ya tiene nota en este módulo
     if camper["notas"][modulo_seleccionado] is not None:
-        print(f" Este camper ya tiene nota registrada en {modulo_seleccionado}")
+        print(f"Este camper ya tiene nota registrada en {modulo_seleccionado}")
         print(f"Nota actual: {camper['notas'][modulo_seleccionado]['nota_final']}")
-        confirmar = input("¿Desea sobrescribir? (s/n): ").lower()
+        confirmar = input("Desea sobrescribir? (s/n): ").lower()
         if confirmar != "s":
             return
     
@@ -187,28 +206,27 @@ def registrar_notas_modulo(nombre_trainer):
     print(f"Camper: {camper['nombre']} {camper['apellidos']}")
     print(f"Ruta: {camper['ruta']}")
     print("Recuerda: La nota final se calcula como:")
-    print("  30% Teoría + 60% Práctica + 10% Quizes/Trabajos")
+    print("  30% Teoria + 60% Practica + 10% Quizes/Trabajos")
     
-    # Pedir notas
     while True:
         try:
-            nota_teoria = float(input("\nNota teórica (0-100): "))
+            nota_teoria = float(input("Nota teorica (0-100): "))
             if 0 <= nota_teoria <= 100:
                 break
             else:
                 print("La nota debe estar entre 0 y 100")
         except:
-            print("Por favor ingrese un número válido")
+            print("Por favor ingrese un numero valido")
     
     while True:
         try:
-            nota_practica = float(input("Nota práctica (0-100): "))
+            nota_practica = float(input("Nota practica (0-100): "))
             if 0 <= nota_practica <= 100:
                 break
             else:
                 print("La nota debe estar entre 0 y 100")
         except:
-            print("Por favor ingrese un número válido")
+            print("Por favor ingrese un numero valido")
     
     while True:
         try:
@@ -218,26 +236,23 @@ def registrar_notas_modulo(nombre_trainer):
             else:
                 print("La nota debe estar entre 0 y 100")
         except:
-            print("Por favor ingrese un número válido")
+            print("Por favor ingrese un numero valido")
     
-    # Calcular nota final
     nota_final = calcular_nota_final(nota_teoria, nota_practica, nota_quizes)
     
-    print(f"--- RESULTADO ---")
-    print(f"Nota teórica (30%): {nota_teoria}")
-    print(f"Nota práctica (60%): {nota_practica}")
+    print("--- RESULTADO ---")
+    print(f"Nota teorica (30%): {nota_teoria}")
+    print(f"Nota practica (60%): {nota_practica}")
     print(f"Nota quizes (10%): {nota_quizes}")
     print(f"NOTA FINAL: {nota_final}")
     
-    # Determinar si aprobó
     aprobo = nota_final >= 60
     
     if aprobo:
-        print(" APROBADO")
+        print("APROBADO")
     else:
-        print(" REPROBADO - Rendimiento bajo")
+        print("REPROBADO - Rendimiento bajo")
     
-    # Guardar notas
     camper["notas"][modulo_seleccionado] = {
         "teoria": nota_teoria,
         "practica": nota_practica,
@@ -246,12 +261,10 @@ def registrar_notas_modulo(nombre_trainer):
         "aprobado": aprobo
     }
     
-    # Actualizar riesgo si reprobó
     if not aprobo:
         camper["riesgo"] = "Alto"
         print("ALERTA: Camper marcado como riesgo ALTO")
     
-    # Actualizar estadísticas en rutas
     for ruta in datos_rutas["rutas"]:
         if ruta["nombre"] == camper["ruta"]:
             if modulo_seleccionado in ruta["modulos"]:
@@ -266,10 +279,10 @@ def registrar_notas_modulo(nombre_trainer):
     
     print("Notas registradas correctamente")
 
-# ==================== VER NOTAS DE CAMPERS ====================
+# --------------------------------- 3. VER NOTAS DE CAMPER ---------------------------------
 
 def ver_notas_camper():
-    print("====== VER NOTAS DE CAMPER ======")
+    print("------ VER NOTAS DE CAMPER ------")
     
     datos_campers = cargar_campers()
     
@@ -282,7 +295,7 @@ def ver_notas_camper():
             break
     
     if not camper:
-        print(" Camper no encontrado")
+        print("Camper no encontrado")
         return
     
     print(f"--- NOTAS DE {camper['nombre']} {camper['apellidos']} ---")
@@ -291,15 +304,15 @@ def ver_notas_camper():
     print(f"Riesgo: {camper['riesgo']}")
     
     if "notas" not in camper:
-        print(" No tiene notas registradas")
+        print("No tiene notas registradas")
         return
     
-    print("--- MÓDULOS ---")
+    print("--- MODULOS ---")
     
     modulos_nombres = {
         "fundamentos": "Fundamentos",
         "web": "Web",
-        "programacion_formal": "Programación Formal",
+        "programacion_formal": "Programacion Formal",
         "bases_datos": "Bases de Datos",
         "backend": "Backend"
     }
@@ -310,8 +323,8 @@ def ver_notas_camper():
             print("  Sin evaluar")
         else:
             notas = camper["notas"][modulo]
-            print(f"  Teoría: {notas['teoria']}")
-            print(f"  Práctica: {notas['practica']}")
+            print(f"  Teoria: {notas['teoria']}")
+            print(f"  Practica: {notas['practica']}")
             print(f"  Quizes: {notas['quizes']}")
             print(f"  NOTA FINAL: {notas['nota_final']}")
             if notas['aprobado']:
@@ -319,16 +332,15 @@ def ver_notas_camper():
             else:
                 print("  Estado: REPROBADO")
 
-# ==================== LISTAR CAMPERS EN RIESGO ====================
+# --------------------------------- 4. VER CAMPERS EN RIESGO ALTO ---------------------------------
 
 def listar_campers_riesgo_alto(nombre_trainer):
-    print("====== CAMPERS EN RIESGO ALTO (MIS RUTAS) ======")
+    print("------ CAMPERS EN RIESGO ALTO (MIS RUTAS) ------")
     
     datos_campers = cargar_campers()
     datos_rutas = cargar_rutas()
     datos_trainers = cargar_trainers()
     
-    # Buscar el trainer
     trainer_encontrado = None
     for t in datos_trainers["profesores"]:
         if t["nombre"].lower() == nombre_trainer.lower():
@@ -339,7 +351,6 @@ def listar_campers_riesgo_alto(nombre_trainer):
         print("Trainer no encontrado")
         return
     
-    # Buscar rutas del trainer
     rutas_del_trainer = []
     for ruta in datos_rutas["rutas"]:
         if ruta["trainer_asignado"] == trainer_encontrado["nombre"]:
@@ -349,12 +360,10 @@ def listar_campers_riesgo_alto(nombre_trainer):
         print("No tienes rutas activas")
         return
     
-    # Obtener IDs de campers en las rutas del trainer
     ids_campers_trainer = []
     for ruta in rutas_del_trainer:
         ids_campers_trainer.extend(ruta["campers_asignados"])
     
-    # Filtrar campers en riesgo alto
     campers_riesgo = []
     for c in datos_campers["campers"]:
         if c["id"] in ids_campers_trainer and c["riesgo"].lower() == "alto":
@@ -364,7 +373,7 @@ def listar_campers_riesgo_alto(nombre_trainer):
         print("No hay campers en riesgo alto en tus rutas")
         return
     
-    print(f"\nTotal en riesgo alto: {len(campers_riesgo)}")
+    print(f"Total en riesgo alto: {len(campers_riesgo)}")
     
     for c in campers_riesgo:
         print(f"--- {c['nombre']} {c['apellidos']} ---")
@@ -373,38 +382,7 @@ def listar_campers_riesgo_alto(nombre_trainer):
         print(f"Estado: {c['estado']}")
         
         if "notas" in c:
-            print("Módulos reprobados:")
+            print("Modulos reprobados:")
             for modulo, notas in c["notas"].items():
                 if notas is not None and not notas['aprobado']:
-                    print(f"{modulo}: {notas['nota_final']}")
-
-# ==================== MENÚ PRINCIPAL TRAINER ====================
-
-def menu_trainer(nombre_trainer):
-    opcion = ""
-    
-    while opcion != "5":
-        print("========================================")
-        print(f"     MENÚ TRAINER - {nombre_trainer}")
-        print("========================================")
-        print("1. Ver mis rutas y campers")
-        print("2. Registrar notas de módulo")
-        print("3. Ver notas de un camper")
-        print("4. Ver campers en riesgo alto")
-        print("5. Salir")
-        print("========================================")
-        
-        opcion = input("Seleccione una opción: ")
-        
-        if opcion == "1":
-            ver_mis_rutas(nombre_trainer)
-        elif opcion == "2":
-            registrar_notas_modulo(nombre_trainer)
-        elif opcion == "3":
-            ver_notas_camper()
-        elif opcion == "4":
-            listar_campers_riesgo_alto(nombre_trainer)
-        elif opcion == "5":
-            print("Saliendo del módulo trainer...")
-        else:
-            print("Opción inválida")
+                    print(f"  {modulo}: {notas['nota_final']}")

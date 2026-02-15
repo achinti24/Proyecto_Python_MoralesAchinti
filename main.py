@@ -12,42 +12,40 @@ def cargar_usuarios():
 
 def main():
     while True:
-        print("========================================")
+        print("----------------------------------------")
         print("   BIENVENIDO A CAMPUSLANDS")
-        print("========================================")
-        print("1. Iniciar sesión")
+        print("----------------------------------------")
+        print("1. Iniciar sesion")
         print("2. Registrarse como camper")
         print("3. Salir")
-        print("========================================")
+        print("----------------------------------------")
         
         try:
-            opcion = input("Seleccione una opción: ")
+            opcion = input("Seleccione una opcion: ")
         except:
-            print("Opción inválida")
+            print("Opcion invalida")
             continue
         
         if opcion == "1":
             usuarios = cargar_usuarios()
             
-            correo = input("Correo electrónico: ")
+            correo = input("Correo electronico: ")
             contraseña = input("Contraseña: ")
             
             encontrado = False
             
             for usuario in usuarios:
                 if usuario["correo"] == correo and usuario["password"] == contraseña:
-                    print("Inicio de sesión exitoso")
+                    print("Inicio de sesion exitoso")
                     
                     if usuario["rol"] == "coordinador":
                         print(f"Bienvenido, {usuario.get('nombre', 'Coordinador')}")
                         menu_coordinador()
                     elif usuario["rol"] == "trainer":
-                        # Usar el nombre del usuario si está disponible
                         if "nombre" in usuario:
                             nombre_trainer = usuario["nombre"]
                             print(f"Bienvenido, {nombre_trainer}")
                         else:
-                            # Si no está, pedirlo
                             nombre_trainer = input("Ingrese su nombre completo: ")
                         
                         menu_trainer(nombre_trainer)
@@ -62,11 +60,11 @@ def main():
             registrar_camper()
             
         elif opcion == "3":
-            print("saliendo...")
+            print("Hasta luego!")
             break
             
         else:
-            print("Opción inválida")
+            print("Opcion invalida")
 
 if __name__ == "__main__":
     main()

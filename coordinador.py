@@ -1,10 +1,11 @@
 import json
+import random
 
 ARCHIVO_TRAINERS = "TRAINERS.json"
 ARCHIVO_CAMPERS = "campers.json"
 ARCHIVO_RUTAS = "rutas.json"
 
-# ==================== FUNCIONES AUXILIARES ====================
+# --------------------------------- FUNCIONES AUXILIARES ---------------------------------
 
 def cargar_campers():
     try:
@@ -39,28 +40,158 @@ def guardar_trainers(datos):
     with open(ARCHIVO_TRAINERS, "w", encoding="utf-8") as archivo:
         json.dump(datos, archivo, indent=4, ensure_ascii=False)
 
-# ==================== CRUD TRAINERS ====================
+# --------------------------------- MENU PRINCIPAL COORDINADOR ---------------------------------
+
+def menu_coordinador():
+    opcion = ""
+
+    while opcion != "7":
+        print("----------------------------------------")
+        print("     MENU COORDINADOR")
+        print("----------------------------------------")
+        print("1. CRUD Campers")
+        print("2. CRUD Trainers")
+        print("3. Examen Inicial")
+        print("4. Matricula")
+        print("5. Reportes")
+        print("6. Ver campers en riesgo alto")
+        print("7. Salir")
+        print("----------------------------------------")
+
+        opcion = input("Seleccione una opcion: ")
+
+        if opcion == "1":
+            crud_campers()
+        elif opcion == "2":
+            crud_trainers()
+        elif opcion == "3":
+            menu_examen_inicial()
+        elif opcion == "4":
+            menu_matricula()
+        elif opcion == "5":
+            menu_reportes()
+        elif opcion == "6":
+            reporte_bajo_rendimiento()
+        elif opcion == "7":
+            print("Saliendo del modulo coordinador...")
+        else:
+            print("Opcion invalida")
+
+# --------------------------------- 1. CRUD CAMPERS ---------------------------------
+
+def crud_campers():
+    datos = cargar_campers()
+    opcion = ""
+
+    while opcion != "4":
+        print("------ CRUD CAMPERS ------")
+        print("1. Mostrar campers")
+        print("2. Actualizar camper")
+        print("3. Eliminar camper")
+        print("4. Volver")
+
+        opcion = input("Seleccione una opcion: ")
+        
+        if opcion == "1":
+            if not datos["campers"]:
+                print("No hay campers registrados")
+            else:
+                print("--- LISTADO DE CAMPERS ---")
+                for c in datos["campers"]:
+                    print(f"ID: {c['id']}")
+                    print(f"Nombre: {c['nombre']} {c['apellidos']}")
+                    print(f"Direccion: {c['direccion']}")
+                    print(f"Telefono: {c['telefono']}")
+                    print(f"Acudiente: {c['acudiente']}")
+                    print(f"Estado: {c['estado']}")
+                    print(f"Riesgo: {c['riesgo']}")
+                    print(f"Ruta: {c['ruta']}")
+                    if c.get('fecha_inicio'):
+                        print(f"Fecha inicio: {c['fecha_inicio']}")
+                    if c.get('fecha_fin'):
+                        print(f"Fecha fin: {c['fecha_fin']}")
+                    print("---")
+                    
+        elif opcion == "2":
+            id_buscar = input("ID del camper a actualizar: ")
+            encontrado = False
+
+            for c in datos["campers"]:
+                if c["id"] == id_buscar:
+                    encontrado = True
+                    print("Camper encontrado")
+
+                    while True:
+                        print(f"QUE DESEA ACTUALIZAR DE {c['nombre']}?")
+                        print("1. Cambiar nombre y apellido")
+                        print("2. Cambiar direccion")
+                        print("3. Cambiar acudiente")
+                        print("4. Cambiar numero telefonico")
+                        print("5. Cambiar estado")
+                        print("6. Cambiar riesgo")
+                        print("7. Salir")
+
+                        opcion_edit = input("Seleccione una opcion: ")
+
+                        if opcion_edit == "1":
+                            c["nombre"] = input("Nuevo nombre: ")
+                            c["apellidos"] = input("Nuevos apellidos: ")
+                        elif opcion_edit == "2":
+                            c["direccion"] = input("Nueva direccion: ")
+                        elif opcion_edit == "3":
+                            c["acudiente"] = input("Nuevo acudiente: ")
+                        elif opcion_edit == "4":
+                            c["telefono"] = input("Nuevo telefono: ")
+                        elif opcion_edit == "5":
+                            c["estado"] = input("Nuevo estado: ")
+                        elif opcion_edit == "6":
+                            c["riesgo"] = input("Nuevo riesgo: ")
+                        elif opcion_edit == "7":
+                            print("Saliendo de edicion...")
+                            break
+                        else:
+                            print("Opcion no valida")
+                            continue
+                            
+                        guardar_campers(datos)
+                        print("Camper actualizado correctamente")
+                    break
+
+            if not encontrado:
+                print("Camper no encontrado")
+                
+        elif opcion == "3":
+            id_eliminar = input("ID del camper a eliminar: ")
+            nuevos = [c for c in datos["campers"] if c["id"] != id_eliminar]
+
+            if len(nuevos) == len(datos["campers"]):
+                print("Camper no encontrado")
+            else:
+                datos["campers"] = nuevos
+                guardar_campers(datos)
+                print("Camper eliminado correctamente")
+
+# --------------------------------- 2. CRUD TRAINERS ---------------------------------
 
 def crud_trainers():
     datos = cargar_trainers()
     opcion = ""
 
     while opcion != "5":
-        print("====== CRUD TRAINERS ======")
+        print("------ CRUD TRAINERS ------")
         print("1. Crear trainer")
         print("2. Mostrar trainers")
         print("3. Actualizar trainer")
         print("4. Eliminar trainer")
         print("5. Volver")
 
-        opcion = input("Seleccione una opción: ")
+        opcion = input("Seleccione una opcion: ")
         
         if opcion == "1":
             nombre = input("Nombre del trainer: ")
             horario = input("Horario (ej: 6am a 2pm): ")
             rutas = input("Rutas (separadas por coma, ej: NodeJS, Java): ").split(",")
 
-            # Generar ID automático
             if len(datos["profesores"]) > 0:
                 ultimo_id = max([t["id"] for t in datos["profesores"]])
                 nuevo_id = ultimo_id + 1
@@ -88,6 +219,7 @@ def crud_trainers():
                     print(f"Nombre: {t['nombre']}")
                     print(f"Horario: {t['horario']}")
                     print(f"Rutas: {', '.join(t['rutas'])}")
+                    print("---")
                     
         elif opcion == "3":
             nombre_buscar = input("Nombre del trainer a actualizar: ").lower()
@@ -99,13 +231,13 @@ def crud_trainers():
                     print("Trainer encontrado")
 
                     while True:
-                        print(f"¿Qué desea actualizar de {t['nombre']}?")
+                        print(f"Que desea actualizar de {t['nombre']}?")
                         print("1. Cambiar nombre")
                         print("2. Cambiar horario")
                         print("3. Cambiar rutas")
                         print("4. Salir")
 
-                        opcion_edit = input("Seleccione una opción: ")
+                        opcion_edit = input("Seleccione una opcion: ")
 
                         if opcion_edit == "1":
                             t["nombre"] = input("Nuevo nombre: ")
@@ -115,123 +247,54 @@ def crud_trainers():
                             nuevas_rutas = input("Nuevas rutas (separadas por coma): ")
                             t["rutas"] = [r.strip() for r in nuevas_rutas.split(",")]
                         elif opcion_edit == "4":
-                            print("Saliendo de edición...")
+                            print("Saliendo de edicion...")
                             break
                         else:
-                            print("Opción no válida")
+                            print("Opcion no valida")
                             continue
                             
                         guardar_trainers(datos)
-                        print(" Trainer actualizado correctamente")
+                        print("Trainer actualizado correctamente")
                     break
 
             if not encontrado:
-                print(" Trainer no encontrado")
+                print("Trainer no encontrado")
 
         elif opcion == "4":
             nombre_eliminar = input("Nombre del trainer a eliminar: ").lower()
             nuevos = [t for t in datos["profesores"] if t["nombre"].lower() != nombre_eliminar]
 
             if len(nuevos) == len(datos["profesores"]):
-                print(" Trainer no encontrado")
+                print("Trainer no encontrado")
             else:
                 datos["profesores"] = nuevos
                 guardar_trainers(datos)
-                print(" Trainer eliminado correctamente")
+                print("Trainer eliminado correctamente")
 
-# ==================== CRUD CAMPERS ====================
+# --------------------------------- 3. MENU EXAMEN INICIAL ---------------------------------
 
-def crud_campers():
-    datos = cargar_campers()
+def menu_examen_inicial():
     opcion = ""
-
-    while opcion != "4":
-        print("====== CRUD CAMPERS ======")
-        print("1. Mostrar campers")
-        print("2. Actualizar camper")
-        print("3. Eliminar camper")
-        print("4. Volver")
-
-        opcion = input("Seleccione una opción: ")
+    
+    while opcion != "3":
+        print("------ MENU EXAMEN INICIAL ------")
+        print("1. Registrar examen inicial")
+        print("2. Ver resultados de examenes")
+        print("3. Volver")
+        
+        opcion = input("Seleccione una opcion: ")
         
         if opcion == "1":
-            if not datos["campers"]:
-                print("No hay campers registrados")
-            else:
-                print("--- LISTADO DE CAMPERS ---")
-                for c in datos["campers"]:
-                    print(f"\nID: {c['id']}")
-                    print(f"Nombre: {c['nombre']} {c['apellidos']}")
-                    print(f"Dirección: {c['direccion']}")
-                    print(f"Teléfono: {c['telefono']}")
-                    print(f"Acudiente: {c['acudiente']}")
-                    print(f"Estado: {c['estado']}")
-                    print(f"Riesgo: {c['riesgo']}")
-                    print(f"Ruta: {c['ruta']}")
-                    
+            registrar_examen_inicial()
         elif opcion == "2":
-            id_buscar = input("ID del camper a actualizar: ")
-            encontrado = False
-
-            for c in datos["campers"]:
-                if c["id"] == id_buscar:
-                    encontrado = True
-                    print("Camper encontrado")
-
-                    while True:
-                        print(f"¿QUÉ DESEA ACTUALIZAR DE {c['nombre']}?")
-                        print("1. Cambiar nombre y apellido")
-                        print("2. Cambiar dirección")
-                        print("3. Cambiar acudiente")
-                        print("4. Cambiar número telefónico")
-                        print("5. Cambiar estado")
-                        print("6. Cambiar riesgo")
-                        print("7. Salir")
-
-                        opcion_edit = input("Seleccione una opción: ")
-
-                        if opcion_edit == "1":
-                            c["nombre"] = input("Nuevo nombre: ")
-                            c["apellidos"] = input("Nuevos apellidos: ")
-                        elif opcion_edit == "2":
-                            c["direccion"] = input("Nueva dirección: ")
-                        elif opcion_edit == "3":
-                            c["acudiente"] = input("Nuevo acudiente: ")
-                        elif opcion_edit == "4":
-                            c["telefono"] = input("Nuevo teléfono: ")
-                        elif opcion_edit == "5":
-                            c["estado"] = input("Nuevo estado: ")
-                        elif opcion_edit == "6":
-                            c["riesgo"] = input("Nuevo riesgo: ")
-                        elif opcion_edit == "7":
-                            print("Saliendo de edición...")
-                            break
-                        else:
-                            print("Opción no válida")
-                            continue
-                            
-                        guardar_campers(datos)
-                        print("Camper actualizado correctamente")
-                    break
-
-            if not encontrado:
-                print(" Camper no encontrado")
-                
+            ver_resultados_examenes()
         elif opcion == "3":
-            id_eliminar = input("ID del camper a eliminar: ")
-            nuevos = [c for c in datos["campers"] if c["id"] != id_eliminar]
-
-            if len(nuevos) == len(datos["campers"]):
-                print(" Camper no encontrado")
-            else:
-                datos["campers"] = nuevos
-                guardar_campers(datos)
-                print("Camper eliminado correctamente")
-
-# ==================== MÓDULO EXAMEN INICIAL ====================
+            print("Volviendo al menu principal...")
+        else:
+            print("Opcion invalida")
 
 def registrar_examen_inicial():
-    print("====== REGISTRAR EXAMEN INICIAL ======")
+    print("------ REGISTRAR EXAMEN INICIAL ------")
     
     datos = cargar_campers()
     
@@ -239,7 +302,6 @@ def registrar_examen_inicial():
         print("No hay campers registrados")
         return
     
-    # Mostrar solo campers en proceso de ingreso
     campers_disponibles = []
     for c in datos["campers"]:
         if c["estado"].lower() == "en proceso de ingreso":
@@ -255,7 +317,6 @@ def registrar_examen_inicial():
     
     id_camper = input("Ingrese el ID del camper: ")
     
-    # Buscar el camper
     camper_encontrado = None
     for c in datos["campers"]:
         if c["id"] == id_camper:
@@ -263,45 +324,42 @@ def registrar_examen_inicial():
             break
     
     if not camper_encontrado:
-        print(" Camper no encontrado")
+        print("Camper no encontrado")
         return
     
     if camper_encontrado["estado"].lower() != "en proceso de ingreso":
-        print(" Este camper no está en proceso de ingreso")
+        print("Este camper no esta en proceso de ingreso")
         return
     
     print(f"Registrando examen para: {camper_encontrado['nombre']} {camper_encontrado['apellidos']}")
     
-    # Pedir notas
     while True:
         try:
-            nota_teorica = float(input("Nota teórica (0-100): "))
+            nota_teorica = float(input("Nota teorica (0-100): "))
             if 0 <= nota_teorica <= 100:
                 break
             else:
                 print("La nota debe estar entre 0 y 100")
         except:
-            print("Por favor ingrese un número válido")
+            print("Por favor ingrese un numero valido")
     
     while True:
         try:
-            nota_practica = float(input("Nota práctica (0-100): "))
+            nota_practica = float(input("Nota practica (0-100): "))
             if 0 <= nota_practica <= 100:
                 break
             else:
                 print("La nota debe estar entre 0 y 100")
         except:
-            print("Por favor ingrese un número válido")
+            print("Por favor ingrese un numero valido")
     
-    # Calcular promedio
     promedio = (nota_teorica + nota_practica) / 2
     
-    print(f"--- RESULTADO ---")
-    print(f"Nota teórica: {nota_teorica}")
-    print(f"Nota práctica: {nota_practica}")
+    print("--- RESULTADO ---")
+    print(f"Nota teorica: {nota_teorica}")
+    print(f"Nota practica: {nota_practica}")
     print(f"Promedio: {promedio}")
     
-    # Guardar notas en el camper
     if "examen_inicial" not in camper_encontrado:
         camper_encontrado["examen_inicial"] = {}
     
@@ -309,19 +367,18 @@ def registrar_examen_inicial():
     camper_encontrado["examen_inicial"]["practica"] = nota_practica
     camper_encontrado["examen_inicial"]["promedio"] = promedio
     
-    # Cambiar estado según resultado
     if promedio >= 60:
         camper_encontrado["estado"] = "Aprobado"
-        print(" ¡APROBADO! El camper puede matricularse")
+        print("APROBADO! El camper puede matricularse")
     else:
         camper_encontrado["estado"] = "Reprobado"
-        print(" REPROBADO. El camper no aprobó el examen inicial")
+        print("REPROBADO. El camper no aprobo el examen inicial")
     
     guardar_campers(datos)
     print("Examen registrado correctamente")
 
 def ver_resultados_examenes():
-    print("====== RESULTADOS DE EXÁMENES ======")
+    print("------ RESULTADOS DE EXAMENES ------")
     
     datos = cargar_campers()
     
@@ -335,66 +392,63 @@ def ver_resultados_examenes():
             campers_con_examen.append(c)
     
     if not campers_con_examen:
-        print("No hay exámenes registrados")
+        print("No hay examenes registrados")
         return
     
     for c in campers_con_examen:
         print(f"--- {c['nombre']} {c['apellidos']} ---")
         print(f"ID: {c['id']}")
-        print(f"Nota teórica: {c['examen_inicial']['teorica']}")
-        print(f"Nota práctica: {c['examen_inicial']['practica']}")
+        print(f"Nota teorica: {c['examen_inicial']['teorica']}")
+        print(f"Nota practica: {c['examen_inicial']['practica']}")
         print(f"Promedio: {c['examen_inicial']['promedio']}")
         print(f"Estado: {c['estado']}")
 
-def menu_examen_inicial():
+# --------------------------------- 4. MENU MATRICULA ---------------------------------
+
+def menu_matricula():
     opcion = ""
     
-    while opcion != "3":
-        print("====== MENÚ EXAMEN INICIAL ======")
-        print("1. Registrar examen inicial")
-        print("2. Ver resultados de exámenes")
-        print("3. Volver")
+    while opcion != "4":
+        print("------ MENU MATRICULA ------")
+        print("1. Matricular camper")
+        print("2. Ver campers matriculados")
+        print("3. Ver rutas y cupos disponibles")
+        print("4. Volver")
         
-        opcion = input("Seleccione una opción: ")
+        opcion = input("Seleccione una opcion: ")
         
         if opcion == "1":
-            registrar_examen_inicial()
+            matricular_camper()
         elif opcion == "2":
-            ver_resultados_examenes()
+            ver_matriculados()
         elif opcion == "3":
-            print("Volviendo al menú principal...")
+            ver_rutas_y_cupos()
+        elif opcion == "4":
+            print("Volviendo al menu principal...")
         else:
-            print("Opción inválida")
-
-# ==================== MÓDULO MATRÍCULA ====================
+            print("Opcion invalida")
 
 def calcular_fecha_fin(fecha_inicio):
-    """Calcula la fecha de fin sumando exactamente 10 meses a la fecha de inicio"""
     try:
         partes = fecha_inicio.split("/")
         dia = int(partes[0])
         mes = int(partes[1])
         anio = int(partes[2])
         
-        # Sumar 10 meses
         mes += 10
         
-        # Ajustar año si los meses pasan de 12
         while mes > 12:
             mes -= 12
             anio += 1
         
-        # Formatear fecha
         return f"{dia:02d}/{mes:02d}/{anio}"
     except:
         return "Error en fecha"
 
 def obtener_salones_disponibles():
-    """Retorna lista de salones disponibles"""
     return ["Apolo", "Artemis", "Sputnik"]
 
 def obtener_horarios_por_jornada(jornada):
-    """Retorna los horarios disponibles según la jornada"""
     if jornada.lower() == "mañana" or jornada.lower() == "manana":
         return ["6am-10am", "10am-2pm"]
     elif jornada.lower() == "tarde":
@@ -403,7 +457,6 @@ def obtener_horarios_por_jornada(jornada):
         return []
 
 def verificar_disponibilidad_trainer(trainer, salon, horario, datos_rutas):
-    """Verifica si un trainer está disponible en ese salón y horario"""
     for ruta in datos_rutas["rutas"]:
         if ruta["trainer_asignado"] == trainer["nombre"]:
             if ruta["salon"] == salon and ruta["horario"] == horario:
@@ -411,15 +464,12 @@ def verificar_disponibilidad_trainer(trainer, salon, horario, datos_rutas):
     return True
 
 def matricular_camper():
-    print("====== MATRICULAR CAMPER ======")
-    
-    import random
+    print("------ MATRICULAR CAMPER ------")
     
     datos_campers = cargar_campers()
     datos_rutas = cargar_rutas()
     datos_trainers = cargar_trainers()
     
-    # Mostrar campers aprobados
     campers_aprobados = []
     for c in datos_campers["campers"]:
         if c["estado"] == "Aprobado" and c["ruta"] is None:
@@ -435,7 +485,6 @@ def matricular_camper():
     
     id_camper = input("Ingrese el ID del camper a matricular: ")
     
-    # Buscar camper
     camper = None
     for c in datos_campers["campers"]:
         if c["id"] == id_camper:
@@ -443,43 +492,38 @@ def matricular_camper():
             break
     
     if not camper:
-        print(" Camper no encontrado")
+        print("Camper no encontrado")
         return
     
     if camper["estado"] != "Aprobado":
-        print(" Este camper no está aprobado")
+        print("Este camper no esta aprobado")
         return
     
     if camper["ruta"] is not None:
-        print(" Este camper ya está matriculado")
+        print("Este camper ya esta matriculado")
         return
     
-    # Preguntar jornada
     print("--- JORNADA ---")
-    print("1. Mañana (6am-10am / 10am-2pm)")
+    print("1. Manana (6am-10am / 10am-2pm)")
     print("2. Tarde (2pm-6pm / 6pm-10pm)")
     
     opcion_jornada = input("Seleccione la jornada: ")
     
     if opcion_jornada == "1":
-        jornada = "mañana"
+        jornada = "manana"
     elif opcion_jornada == "2":
         jornada = "tarde"
     else:
-        print(" Jornada inválida")
+        print("Jornada invalida")
         return
     
-    # Obtener horarios disponibles para la jornada
     horarios_disponibles = obtener_horarios_por_jornada(jornada)
     
-    # Preguntar fecha de inicio
     print("Ingrese la fecha de inicio (formato: DD/MM/YYYY)")
     fecha_inicio = input("Fecha: ")
     
-    # Calcular fecha de fin (10 meses después)
     fecha_fin = calcular_fecha_fin(fecha_inicio)
     
-    # Buscar rutas con cupos disponibles
     rutas_con_cupos = []
     for ruta in datos_rutas["rutas"]:
         if len(ruta["campers_asignados"]) < ruta["capacidad_maxima"]:
@@ -489,10 +533,8 @@ def matricular_camper():
         print("No hay rutas con cupos disponibles")
         return
     
-    # Obtener salones disponibles
     salones = obtener_salones_disponibles()
     
-    # Intentar asignar automáticamente
     asignacion_exitosa = False
     intentos = 0
     max_intentos = 100
@@ -500,12 +542,10 @@ def matricular_camper():
     while not asignacion_exitosa and intentos < max_intentos:
         intentos += 1
         
-        # Seleccionar aleatoriamente: ruta, horario, salón
         ruta_random = random.choice(rutas_con_cupos)
         horario_random = random.choice(horarios_disponibles)
         salon_random = random.choice(salones)
         
-        # Buscar trainers que enseñen esta ruta
         trainers_disponibles = []
         for trainer in datos_trainers["profesores"]:
             tiene_ruta = False
@@ -515,15 +555,12 @@ def matricular_camper():
                     break
             
             if tiene_ruta:
-                # Verificar disponibilidad (que no esté en ese salón y horario)
                 if verificar_disponibilidad_trainer(trainer, salon_random, horario_random, datos_rutas):
                     trainers_disponibles.append(trainer)
         
-        # Si hay trainers disponibles, asignar
         if trainers_disponibles:
             trainer_seleccionado = random.choice(trainers_disponibles)
             
-            # Asignar camper a la ruta
             ruta_random["campers_asignados"].append(id_camper)
             ruta_random["trainer_asignado"] = trainer_seleccionado["nombre"]
             ruta_random["salon"] = salon_random
@@ -531,12 +568,12 @@ def matricular_camper():
             ruta_random["fecha_inicio"] = fecha_inicio
             ruta_random["fecha_fin"] = fecha_fin
             
-            # Actualizar camper
             camper["ruta"] = ruta_random["nombre"]
             camper["estado"] = "Cursando"
             camper["jornada"] = jornada
+            camper["fecha_inicio"] = fecha_inicio
+            camper["fecha_fin"] = fecha_fin
             
-            # Inicializar notas por módulo
             camper["notas"] = {
                 "fundamentos": None,
                 "web": None,
@@ -545,29 +582,28 @@ def matricular_camper():
                 "backend": None
             }
             
-            # Guardar cambios
             guardar_rutas(datos_rutas)
             guardar_campers(datos_campers)
             
-            print(" MATRÍCULA EXITOSA (ASIGNACIÓN AUTOMÁTICA)")
+            print("MATRICULA EXITOSA (ASIGNACION AUTOMATICA)")
             print(f"Camper: {camper['nombre']} {camper['apellidos']}")
             print(f"Ruta: {ruta_random['nombre']}")
             print(f"Trainer: {trainer_seleccionado['nombre']}")
-            print(f"Salón: {salon_random}")
+            print(f"Salon: {salon_random}")
             print(f"Jornada: {jornada.capitalize()}")
             print(f"Horario: {horario_random}")
             print(f"Fecha inicio: {fecha_inicio}")
-            print(f"Fecha fin: {fecha_fin} (10 meses después)")
+            print(f"Fecha fin: {fecha_fin} (10 meses despues)")
             
             asignacion_exitosa = True
     
     if not asignacion_exitosa:
-        print("No se pudo asignar automáticamente.")
+        print("No se pudo asignar automaticamente.")
         print("No hay trainers disponibles en los salones y horarios de la jornada seleccionada.")
         print("Intenta con otra jornada o verifica la disponibilidad de trainers.")
 
 def ver_matriculados():
-    print("====== CAMPERS MATRICULADOS ======")
+    print("------ CAMPERS MATRICULADOS ------")
     
     datos_campers = cargar_campers()
     
@@ -586,9 +622,13 @@ def ver_matriculados():
         print(f"Ruta: {c['ruta']}")
         print(f"Estado: {c['estado']}")
         print(f"Riesgo: {c['riesgo']}")
+        if c.get('fecha_inicio'):
+            print(f"Fecha inicio: {c['fecha_inicio']}")
+        if c.get('fecha_fin'):
+            print(f"Fecha fin: {c['fecha_fin']}")
 
 def ver_rutas_y_cupos():
-    print("====== RUTAS Y CUPOS DISPONIBLES ======")
+    print("------ RUTAS Y CUPOS DISPONIBLES ------")
     
     datos_rutas = cargar_rutas()
     
@@ -597,13 +637,13 @@ def ver_rutas_y_cupos():
         cupos_disponibles = ruta["capacidad_maxima"] - cupos_ocupados
         
         print(f"--- {ruta['nombre']} ({ruta['id']}) ---")
-        print(f"Capacidad máxima: {ruta['capacidad_maxima']}")
+        print(f"Capacidad maxima: {ruta['capacidad_maxima']}")
         print(f"Cupos ocupados: {cupos_ocupados}")
         print(f"Cupos disponibles: {cupos_disponibles}")
         
         if ruta["trainer_asignado"]:
             print(f"Trainer: {ruta['trainer_asignado']}")
-            print(f"Salón: {ruta['salon']}")
+            print(f"Salon: {ruta['salon']}")
             print(f"Horario: {ruta['horario']}")
         
         if ruta["campers_asignados"]:
@@ -614,33 +654,39 @@ def ver_rutas_y_cupos():
                     if c["id"] == id_camper:
                         print(f"  - {c['nombre']} {c['apellidos']}")
 
-def menu_matricula():
+# --------------------------------- 5. MENU REPORTES ---------------------------------
+
+def menu_reportes():
     opcion = ""
     
-    while opcion != "4":
-        print("====== MENÚ MATRÍCULA ======")
-        print("1. Matricular camper")
-        print("2. Ver campers matriculados")
-        print("3. Ver rutas y cupos disponibles")
-        print("4. Volver")
+    while opcion != "6":
+        print("------ MENU REPORTES ------")
+        print("1. Listar inscritos")
+        print("2. Listar aprobados")
+        print("3. Listar campers con bajo rendimiento")
+        print("4. Reporte por ruta")
+        print("5. Reporte general del sistema")
+        print("6. Volver")
         
-        opcion = input("Seleccione una opción: ")
+        opcion = input("Seleccione una opcion: ")
         
         if opcion == "1":
-            matricular_camper()
+            reporte_inscritos()
         elif opcion == "2":
-            ver_matriculados()
+            reporte_aprobados()
         elif opcion == "3":
-            ver_rutas_y_cupos()
+            reporte_bajo_rendimiento()
         elif opcion == "4":
-            print("Volviendo al menú principal...")
+            reporte_por_ruta()
+        elif opcion == "5":
+            reporte_general()
+        elif opcion == "6":
+            print("Volviendo al menu principal...")
         else:
-            print("Opción inválida")
-
-# ==================== MÓDULO REPORTES ====================
+            print("Opcion invalida")
 
 def reporte_inscritos():
-    print("====== REPORTE DE INSCRITOS ======")
+    print("------ REPORTE DE INSCRITOS ------")
     
     datos = cargar_campers()
     
@@ -659,13 +705,14 @@ def reporte_inscritos():
     for c in inscritos:
         print(f"ID: {c['id']}")
         print(f"Nombre: {c['nombre']} {c['apellidos']}")
-        print(f"Dirección: {c['direccion']}")
-        print(f"Teléfono: {c['telefono']}")
+        print(f"Direccion: {c['direccion']}")
+        print(f"Telefono: {c['telefono']}")
         print(f"Acudiente: {c['acudiente']}")
         print(f"Estado: {c['estado']}")
+        print("---")
 
 def reporte_aprobados():
-    print("====== REPORTE DE APROBADOS ======")
+    print("------ REPORTE DE APROBADOS ------")
     
     datos = cargar_campers()
     
@@ -686,9 +733,10 @@ def reporte_aprobados():
         print(f"Nombre: {c['nombre']} {c['apellidos']}")
         if "examen_inicial" in c:
             print(f"Promedio examen: {c['examen_inicial']['promedio']}")
+        print("---")
 
 def reporte_bajo_rendimiento():
-    print("====== REPORTE DE CAMPERS CON BAJO RENDIMIENTO ======")
+    print("------ REPORTE DE CAMPERS CON BAJO RENDIMIENTO ------")
     
     datos = cargar_campers()
     
@@ -705,19 +753,19 @@ def reporte_bajo_rendimiento():
     print("--- LISTADO ---")
     
     for c in bajo_rendimiento:
-        print(f"\n--- {c['nombre']} {c['apellidos']} ---")
+        print(f"--- {c['nombre']} {c['apellidos']} ---")
         print(f"ID: {c['id']}")
         print(f"Ruta: {c['ruta']}")
         print(f"Estado: {c['estado']}")
         
         if "notas" in c:
-            print("Módulos con problemas:")
+            print("Modulos con problemas:")
             for modulo, notas in c["notas"].items():
                 if notas is not None and not notas['aprobado']:
-                    print(f"  ✗ {modulo}: {notas['nota_final']} - REPROBADO")
+                    print(f"  {modulo}: {notas['nota_final']} - REPROBADO")
 
 def reporte_por_ruta():
-    print("====== REPORTE POR RUTA ======")
+    print("------ REPORTE POR RUTA ------")
     
     datos_campers = cargar_campers()
     datos_rutas = cargar_rutas()
@@ -735,44 +783,41 @@ def reporte_por_ruta():
             break
     
     if not ruta_seleccionada:
-        print(" Ruta no encontrada")
+        print("Ruta no encontrada")
         return
     
-    print(f"====== REPORTE RUTA {ruta_seleccionada['nombre']} ======")
+    print(f"------ REPORTE RUTA {ruta_seleccionada['nombre']} ------")
     
-    # Información general
     cupos_ocupados = len(ruta_seleccionada["campers_asignados"])
     cupos_disponibles = ruta_seleccionada["capacidad_maxima"] - cupos_ocupados
     
-    print(f"--- INFORMACIÓN GENERAL ---")
-    print(f"Capacidad máxima: {ruta_seleccionada['capacidad_maxima']}")
+    print("--- INFORMACION GENERAL ---")
+    print(f"Capacidad maxima: {ruta_seleccionada['capacidad_maxima']}")
     print(f"Campers asignados: {cupos_ocupados}")
     print(f"Cupos disponibles: {cupos_disponibles}")
     
     if ruta_seleccionada["trainer_asignado"]:
         print(f"Trainer: {ruta_seleccionada['trainer_asignado']}")
-        print(f"Salón: {ruta_seleccionada['salon']}")
+        print(f"Salon: {ruta_seleccionada['salon']}")
         print(f"Horario: {ruta_seleccionada['horario']}")
         print(f"Fecha inicio: {ruta_seleccionada['fecha_inicio']}")
         print(f"Fecha fin: {ruta_seleccionada['fecha_fin']}")
     
-    # Campers en esta ruta
     if ruta_seleccionada["campers_asignados"]:
-        print(f"--- CAMPERS EN ESTA RUTA ---")
+        print("--- CAMPERS EN ESTA RUTA ---")
         for id_camper in ruta_seleccionada["campers_asignados"]:
             for c in datos_campers["campers"]:
                 if c["id"] == id_camper:
-                    print(f"\n{c['nombre']} {c['apellidos']} (ID: {c['id']})")
+                    print(f"{c['nombre']} {c['apellidos']} (ID: {c['id']})")
                     print(f"  Estado: {c['estado']}")
                     print(f"  Riesgo: {c['riesgo']}")
     
-    # Estadísticas por módulo
-    print(f"--- ESTADÍSTICAS POR MÓDULO ---")
+    print("--- ESTADISTICAS POR MODULO ---")
     
     modulos_nombres = {
         "fundamentos": "Fundamentos",
         "web": "Web",
-        "programacion_formal": "Programación Formal",
+        "programacion_formal": "Programacion Formal",
         "bases_datos": "Bases de Datos",
         "backend": "Backend"
     }
@@ -789,16 +834,15 @@ def reporte_por_ruta():
             
             if total > 0:
                 porcentaje = (stats['aprobados'] / total) * 100
-                print(f"  Porcentaje de aprobación: {porcentaje:.1f}%")
+                print(f"  Porcentaje de aprobacion: {porcentaje:.1f}%")
 
 def reporte_general():
-    print("====== REPORTE GENERAL DEL SISTEMA ======")
+    print("------ REPORTE GENERAL DEL SISTEMA ------")
     
     datos_campers = cargar_campers()
     datos_rutas = cargar_rutas()
     datos_trainers = cargar_trainers()
     
-    # Contar por estado
     total_campers = len(datos_campers["campers"])
     
     conteo_estados = {
@@ -821,18 +865,17 @@ def reporte_general():
         if riesgo in conteo_riesgo:
             conteo_riesgo[riesgo] += 1
     
-    print(f"--- ESTADÍSTICAS GENERALES ---")
+    print("--- ESTADISTICAS GENERALES ---")
     print(f"Total de campers: {total_campers}")
-    print(f"Por estado:")
+    print("Por estado:")
     for estado, cantidad in conteo_estados.items():
         print(f"  {estado}: {cantidad}")
     
-    print(f"Por riesgo:")
+    print("Por riesgo:")
     for riesgo, cantidad in conteo_riesgo.items():
         print(f"  {riesgo}: {cantidad}")
     
-    # Información de rutas
-    print(f"--- RUTAS ---")
+    print("--- RUTAS ---")
     print(f"Total de rutas: {len(datos_rutas['rutas'])}")
     
     for ruta in datos_rutas["rutas"]:
@@ -840,72 +883,5 @@ def reporte_general():
         print(f"{ruta['nombre']}:")
         print(f"  Campers: {cupos_ocupados}/{ruta['capacidad_maxima']}")
     
-    # Información de trainers
-    print(f"--- TRAINERS ---")
+    print("--- TRAINERS ---")
     print(f"Total de trainers: {len(datos_trainers['profesores'])}")
-
-def menu_reportes():
-    opcion = ""
-    
-    while opcion != "6":
-        print("====== MENÚ REPORTES ======")
-        print("1. Listar inscritos")
-        print("2. Listar aprobados")
-        print("3. Listar campers con bajo rendimiento")
-        print("4. Reporte por ruta")
-        print("5. Reporte general del sistema")
-        print("6. Volver")
-        
-        opcion = input("Seleccione una opción: ")
-        
-        if opcion == "1":
-            reporte_inscritos()
-        elif opcion == "2":
-            reporte_aprobados()
-        elif opcion == "3":
-            reporte_bajo_rendimiento()
-        elif opcion == "4":
-            reporte_por_ruta()
-        elif opcion == "5":
-            reporte_general()
-        elif opcion == "6":
-            print("Volviendo al menú principal...")
-        else:
-            print("Opción inválida")
-
-# ==================== MENÚ PRINCIPAL COORDINADOR ====================
-
-def menu_coordinador():
-    opcion = ""
-
-    while opcion != "7":
-        print("========================================")
-        print("     MENÚ COORDINADOR")
-        print("========================================")
-        print("1. CRUD Campers")
-        print("2. CRUD Trainers")
-        print("3. Examen Inicial")
-        print("4. Matrícula")
-        print("5. Reportes")
-        print("6. Ver campers en riesgo alto")
-        print("7. Salir")
-        print("========================================")
-
-        opcion = input("Seleccione una opción: ")
-
-        if opcion == "1":
-            crud_campers()
-        elif opcion == "2":
-            crud_trainers()
-        elif opcion == "3":
-            menu_examen_inicial()
-        elif opcion == "4":
-            menu_matricula()
-        elif opcion == "5":
-            menu_reportes()
-        elif opcion == "6":
-            reporte_bajo_rendimiento()
-        elif opcion == "7":
-            print("Saliendo del módulo coordinador...")
-        else:
-            print("Opción inválida")
