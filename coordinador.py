@@ -471,6 +471,17 @@ def verificar_disponibilidad_trainer(trainer, salon, horario, datos_rutas):
                 return False
     return True
 
+def generar_correo(camper):
+    nombre = camper["nombre"].lower().replace(" ", "")
+    apellido = camper["apellidos"].lower().replace(" ", "")
+
+    correo = f"{nombre}.{apellido}@campus.com"
+    password = str(random.randint(1000, 9999))
+
+    camper["correo"] = correo
+    camper["password"] = password
+
+
 def matricular_camper():
     print("------ MATRICULAR CAMPER ------")
     
@@ -593,8 +604,13 @@ def matricular_camper():
                 "backend": None
             }
             
+            if "correo" not in camper:
+                generar_correo(camper)
+
             guardar_rutas(datos_rutas)
             guardar_campers(datos_campers)
+
+
             
             print("MATRICULA EXITOSA (ASIGNACION AUTOMATICA)")
             print(f"Camper: {camper['nombre']} {camper['apellidos']}")

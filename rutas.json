@@ -106,13 +106,14 @@
             "nombre": "NetCore",
             "capacidad_maxima": 33,
             "campers_asignados": [
-                "123"
+                "123",
+                "1098"
             ],
-            "trainer_asignado": "Johlber",
-            "salon": "Sputnik",
+            "trainer_asignado": "Edwin Salas",
+            "salon": "Apolo",
             "horario": "6am-10am",
-            "fecha_inicio": "15/02/2026",
-            "fecha_fin": "15/12/2026",
+            "fecha_inicio": "",
+            "fecha_fin": "Error en fecha",
             "modulos": {
                 "fundamentos": {
                     "descripcion": "Algoritmia, PSeInt y Python",

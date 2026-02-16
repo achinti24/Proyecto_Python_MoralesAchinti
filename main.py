@@ -1,7 +1,8 @@
 import json
 from coordinador import menu_coordinador
-from registrarse import registrar_camper
 from trainer import menu_trainer
+from camper import menu_camper
+from registrarse import registrar_camper
 
 def cargar_usuarios():
     try:
@@ -10,61 +11,77 @@ def cargar_usuarios():
     except FileNotFoundError:
         return []
 
+def cargar_campers():
+    try:
+        with open("campers.json", "r", encoding="utf-8") as archivo:
+            return json.load(archivo)
+    except FileNotFoundError:
+        return []
+
+
 def main():
     while True:
-        print("----------------------------------------")
+        print("\n----------------------------------------")
         print("   BIENVENIDO A CAMPUSLANDS")
         print("----------------------------------------")
-        print("1. Iniciar sesion")
+        print("1. Iniciar sesión")
         print("2. Registrarse como camper")
         print("3. Salir")
         print("----------------------------------------")
-        
-        try:
-            opcion = input("Seleccione una opcion: ")
-        except:
-            print("Opcion invalida")
-            continue
-        
+
+        opcion = input("Seleccione una opción: ")
+
         if opcion == "1":
             usuarios = cargar_usuarios()
-            
-            correo = input("Correo electronico: ")
-            contraseña = input("Contraseña: ")
-            
-            encontrado = False
-            
+            datos_campers = cargar_campers()
+
+            correo = input("Correo electrónico: ")
+            password = input("Contraseña: ")
+
+            # ===== LOGIN USUARIOS (COORDINADOR / TRAINER) =====
+            usuario_encontrado = False
+
             for usuario in usuarios:
-                if usuario["correo"] == correo and usuario["password"] == contraseña:
-                    print("Inicio de sesion exitoso")
-                    
+                if usuario["correo"] == correo and usuario["password"] == password:
+                    usuario_encontrado = True
+                    print("Inicio de sesión exitoso")
+
                     if usuario["rol"] == "coordinador":
-                        print(f"Bienvenido, {usuario.get('nombre', 'Coordinador')}")
                         menu_coordinador()
+
                     elif usuario["rol"] == "trainer":
-                        if "nombre" in usuario:
-                            nombre_trainer = usuario["nombre"]
-                            print(f"Bienvenido, {nombre_trainer}")
-                        else:
-                            nombre_trainer = input("Ingrese su nombre completo: ")
-                        
+                        nombre_trainer = usuario.get("nombre", "Trainer")
                         menu_trainer(nombre_trainer)
-                    
-                    encontrado = True
+
                     break
-            
-            if not encontrado:
-                print("Correo o contraseña incorrectos")
-                
+
+            if usuario_encontrado:
+                continue
+
+            # ===== LOGIN CAMPER =====
+            camper_logueado = None
+
+            for camper in datos_campers["campers"]:
+                if camper.get("correo") == correo and camper.get("password") == password:
+                    camper_logueado = camper
+                    break
+
+            if camper_logueado:
+                print(f"\n Bienvenido {camper_logueado['nombre']} {camper_logueado['apellidos']}")
+                menu_camper(camper_logueado)
+            else:
+                print(" Correo o contraseña incorrectos")
+
         elif opcion == "2":
             registrar_camper()
-            
+
         elif opcion == "3":
-            print("Hasta luego!")
+            print("Hasta luego ")
             break
-            
+
         else:
-            print("Opcion invalida")
+            print("Opción inválida")
+
 
 if __name__ == "__main__":
     main()

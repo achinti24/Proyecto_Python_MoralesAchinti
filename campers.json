@@ -28,6 +28,37 @@
             "horario": "6am-10am",
             "fecha_inicio": "15/02/2026",
             "fecha_fin": "15/12/2026"
+        },
+        {
+            "id": "1098",
+            "nombre": "julian",
+            "apellidos": "agudelo",
+            "direccion": "calle76b",
+            "acudiente": "gloria",
+            "telefono": "3124148422",
+            "estado": "Cursando",
+            "riesgo": "Bajo",
+            "ruta": "NetCore",
+            "notas": {
+                "fundamentos": null,
+                "web": null,
+                "programacion_formal": null,
+                "bases_datos": null,
+                "backend": null
+            },
+            "examen_inicial": {
+                "teorica": 80.0,
+                "practica": 90.0,
+                "promedio": 85.0
+            },
+            "jornada": "manana",
+            "trainer": "Edwin Salas",
+            "salon": "Apolo",
+            "horario": "6am-10am",
+            "fecha_inicio": "",
+            "fecha_fin": "Error en fecha",
+            "correo": "julian.agudelo@campus.com",
+            "password": "3182"
         }
     ]
 }
