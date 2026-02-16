@@ -44,15 +44,16 @@ def calcular_nota_final(teoria, practica, quizes):
 def menu_trainer(nombre_trainer):
     opcion = ""
     
-    while opcion != "5":
+    while opcion != "6":
         print("----------------------------------------")
         print(f"     MENU TRAINER - {nombre_trainer}")
         print("----------------------------------------")
         print("1. Ver mis rutas y campers")
-        print("2. Registrar notas de modulo")
-        print("3. Ver notas de un camper")
-        print("4. Ver campers en riesgo alto")
-        print("5. Salir")
+        print("2. Ver mi horario de clases")
+        print("3. Registrar notas de modulo")
+        print("4. Ver notas de un camper")
+        print("5. Ver campers en riesgo alto")
+        print("6. Salir")
         print("----------------------------------------")
         
         opcion = input("Seleccione una opcion: ")
@@ -60,12 +61,14 @@ def menu_trainer(nombre_trainer):
         if opcion == "1":
             ver_mis_rutas(nombre_trainer)
         elif opcion == "2":
-            registrar_notas_modulo(nombre_trainer)
+            ver_horario_clases(nombre_trainer)
         elif opcion == "3":
-            ver_notas_camper()
+            registrar_notas_modulo(nombre_trainer)
         elif opcion == "4":
-            listar_campers_riesgo_alto(nombre_trainer)
+            ver_notas_camper()
         elif opcion == "5":
+            listar_campers_riesgo_alto(nombre_trainer)
+        elif opcion == "6":
             print("Saliendo del modulo trainer...")
         else:
             print("Opcion invalida")
@@ -93,29 +96,129 @@ def ver_mis_rutas(nombre_trainer):
     print(f"Horario: {trainer_encontrado['horario']}")
     print(f"Rutas asignadas: {', '.join(trainer_encontrado['rutas'])}")
     
-    rutas_activas = []
-    for ruta in datos_rutas["rutas"]:
-        if ruta["trainer_asignado"] == trainer_encontrado["nombre"]:
-            rutas_activas.append(ruta)
+    # Buscar campers que tengan este trainer asignado
+    mis_campers = []
+    for c in datos_campers["campers"]:
+        if c.get('trainer') == trainer_encontrado["nombre"] and c["estado"] == "Cursando":
+            mis_campers.append(c)
     
-    if not rutas_activas:
-        print("No tienes rutas activas con campers asignados")
+    if not mis_campers:
+        print("No tienes campers asignados actualmente")
         return
     
-    for ruta in rutas_activas:
-        print(f"--- RUTA: {ruta['nombre']} ---")
-        print(f"Salon: {ruta['salon']}")
-        print(f"Horario: {ruta['horario']}")
-        print(f"Fecha inicio: {ruta['fecha_inicio']}")
-        print(f"Fecha fin: {ruta['fecha_fin']}")
-        print(f"Campers: {len(ruta['campers_asignados'])}/{ruta['capacidad_maxima']}")
+    # Agrupar campers por salon y horario
+    clases = {}
+    for c in mis_campers:
+        salon = c.get('salon', 'Sin asignar')
+        horario = c.get('horario', 'Sin asignar')
+        jornada = c.get('jornada', 'Sin asignar')
+        ruta = c.get('ruta', 'Sin asignar')
         
-        if ruta["campers_asignados"]:
-            print("Campers en esta ruta:")
-            for id_camper in ruta["campers_asignados"]:
-                for c in datos_campers["campers"]:
-                    if c["id"] == id_camper:
-                        print(f"  - {c['nombre']} {c['apellidos']} (ID: {c['id']}) - Riesgo: {c['riesgo']}")
+        clave = f"{salon}|{horario}|{jornada}|{ruta}"
+        
+        if clave not in clases:
+            clases[clave] = []
+        clases[clave].append(c)
+    
+    print(f"\nTienes {len(mis_campers)} campers en total")
+    print("Agrupados por salon y horario:")
+    
+    for clave, campers in clases.items():
+        partes = clave.split('|')
+        salon = partes[0]
+        horario = partes[1]
+        jornada = partes[2]
+        ruta = partes[3]
+        
+        print(f"\n--- CLASE: {ruta} ---")
+        print(f"Salon: {salon}")
+        print(f"Horario: {horario}")
+        print(f"Jornada: {jornada}")
+        print(f"Campers en esta clase: {len(campers)}")
+        
+        for c in campers:
+            print(f"  - {c['nombre']} {c['apellidos']} (ID: {c['id']}) - Riesgo: {c['riesgo']}")
+            if c.get('fecha_inicio') and c.get('fecha_fin'):
+                print(f"    Periodo: {c['fecha_inicio']} a {c['fecha_fin']}")
+
+def ver_horario_clases(nombre_trainer):
+    print("------ MI HORARIO DE CLASES ------")
+    
+    datos_trainers = cargar_trainers()
+    datos_campers = cargar_campers()
+    
+    trainer_encontrado = None
+    for t in datos_trainers["profesores"]:
+        if t["nombre"].lower() == nombre_trainer.lower():
+            trainer_encontrado = t
+            break
+    
+    if not trainer_encontrado:
+        print("Trainer no encontrado")
+        return
+    
+    # Buscar todas las clases del trainer
+    mis_clases = []
+    for c in datos_campers["campers"]:
+        if c.get('trainer') == trainer_encontrado["nombre"] and c["estado"] == "Cursando":
+            clase_info = {
+                'salon': c.get('salon', 'N/A'),
+                'horario': c.get('horario', 'N/A'),
+                'jornada': c.get('jornada', 'N/A'),
+                'ruta': c.get('ruta', 'N/A'),
+                'fecha_inicio': c.get('fecha_inicio', 'N/A'),
+                'fecha_fin': c.get('fecha_fin', 'N/A')
+            }
+            
+            # Evitar duplicados
+            if clase_info not in mis_clases:
+                mis_clases.append(clase_info)
+    
+    if not mis_clases:
+        print("No tienes clases asignadas actualmente")
+        return
+    
+    # Separar por jornada
+    clases_manana = [c for c in mis_clases if c['jornada'].lower() == 'manana']
+    clases_tarde = [c for c in mis_clases if c['jornada'].lower() == 'tarde']
+    
+    if clases_manana:
+        print("\n--- JORNADA MANANA ---")
+        for clase in clases_manana:
+            print(f"Ruta: {clase['ruta']}")
+            print(f"  Salon: {clase['salon']}")
+            print(f"  Horario: {clase['horario']}")
+            print(f"  Periodo: {clase['fecha_inicio']} a {clase['fecha_fin']}")
+            
+            # Contar campers en esta clase
+            num_campers = 0
+            for c in datos_campers["campers"]:
+                if (c.get('trainer') == trainer_encontrado["nombre"] and 
+                    c.get('salon') == clase['salon'] and 
+                    c.get('horario') == clase['horario'] and
+                    c.get('ruta') == clase['ruta']):
+                    num_campers += 1
+            print(f"  Campers: {num_campers}")
+            print()
+    
+    if clases_tarde:
+        print("--- JORNADA TARDE ---")
+        for clase in clases_tarde:
+            print(f"Ruta: {clase['ruta']}")
+            print(f"  Salon: {clase['salon']}")
+            print(f"  Horario: {clase['horario']}")
+            print(f"  Periodo: {clase['fecha_inicio']} a {clase['fecha_fin']}")
+            
+            # Contar campers en esta clase
+            num_campers = 0
+            for c in datos_campers["campers"]:
+                if (c.get('trainer') == trainer_encontrado["nombre"] and 
+                    c.get('salon') == clase['salon'] and 
+                    c.get('horario') == clase['horario'] and
+                    c.get('ruta') == clase['ruta']):
+                    num_campers += 1
+            print(f"  Campers: {num_campers}")
+            print()
 
 # --------------------------------- 2. REGISTRAR NOTAS DE MODULO ---------------------------------
 

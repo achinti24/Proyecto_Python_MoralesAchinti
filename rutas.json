@@ -105,12 +105,14 @@
             "id": "R3",
             "nombre": "NetCore",
             "capacidad_maxima": 33,
-            "campers_asignados": [],
-            "trainer_asignado": null,
-            "salon": null,
-            "horario": null,
-            "fecha_inicio": null,
-            "fecha_fin": null,
+            "campers_asignados": [
+                "123"
+            ],
+            "trainer_asignado": "Johlber",
+            "salon": "Sputnik",
+            "horario": "6am-10am",
+            "fecha_inicio": "15/02/2026",
+            "fecha_fin": "15/12/2026",
             "modulos": {
                 "fundamentos": {
                     "descripcion": "Algoritmia, PSeInt y Python",

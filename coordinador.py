@@ -106,6 +106,14 @@ def crud_campers():
                     print(f"Estado: {c['estado']}")
                     print(f"Riesgo: {c['riesgo']}")
                     print(f"Ruta: {c['ruta']}")
+                    if c.get('trainer'):
+                        print(f"Trainer: {c['trainer']}")
+                    if c.get('salon'):
+                        print(f"Salon: {c['salon']}")
+                    if c.get('horario'):
+                        print(f"Horario: {c['horario']}")
+                    if c.get('jornada'):
+                        print(f"Jornada: {c['jornada']}")
                     if c.get('fecha_inicio'):
                         print(f"Fecha inicio: {c['fecha_inicio']}")
                     if c.get('fecha_fin'):
@@ -571,6 +579,9 @@ def matricular_camper():
             camper["ruta"] = ruta_random["nombre"]
             camper["estado"] = "Cursando"
             camper["jornada"] = jornada
+            camper["trainer"] = trainer_seleccionado["nombre"]
+            camper["salon"] = salon_random
+            camper["horario"] = horario_random
             camper["fecha_inicio"] = fecha_inicio
             camper["fecha_fin"] = fecha_fin
             
@@ -622,6 +633,14 @@ def ver_matriculados():
         print(f"Ruta: {c['ruta']}")
         print(f"Estado: {c['estado']}")
         print(f"Riesgo: {c['riesgo']}")
+        if c.get('trainer'):
+            print(f"Trainer: {c['trainer']}")
+        if c.get('salon'):
+            print(f"Salon: {c['salon']}")
+        if c.get('horario'):
+            print(f"Horario: {c['horario']}")
+        if c.get('jornada'):
+            print(f"Jornada: {c['jornada']}")
         if c.get('fecha_inicio'):
             print(f"Fecha inicio: {c['fecha_inicio']}")
         if c.get('fecha_fin'):
