@@ -120,7 +120,7 @@ def ver_mis_rutas(nombre_trainer):
             clases[clave] = []
         clases[clave].append(c)
     
-    print(f"\nTienes {len(mis_campers)} campers en total")
+    print(f"Tienes {len(mis_campers)} campers en total")
     print("Agrupados por salon y horario:")
     
     for clave, campers in clases.items():

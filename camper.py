@@ -12,7 +12,7 @@ def cargar_campers():
 
 def menu_camper(camper):
     while True:
-        print("\n===================================")
+        print("===================================")
         print("        MENÚ CAMPER")
         print("===================================")
         print("1. Ver información general")
@@ -37,7 +37,7 @@ def menu_camper(camper):
 
 
 def ver_info_camper(camper):
-    print("\n====== INFORMACIÓN GENERAL ======\n")
+    print("====== INFORMACIÓN GENERAL ======")
 
     print(f"ID: {camper.get('id')}")
     print(f"Nombre: {camper.get('nombre')} {camper.get('apellidos')}")
@@ -58,7 +58,7 @@ def ver_info_camper(camper):
 
 
 def ver_notas(camper):
-    print("\n====== NOTAS DEL CAMPER ======\n")
+    print("====== NOTAS DEL CAMPER ======")
 
     print("NOTAS POR MÓDULO")
     notas = camper.get("notas")
@@ -68,11 +68,11 @@ def ver_notas(camper):
     else:
         for modulo, nota in notas.items():
             if nota is None:
-                print(f"- {modulo.replace('_', ' ').title()}: No asignada")
+                print(f"- {modulo.replace('_', ' ')}: No asignada")
             else:
-                print(f"- {modulo.replace('_', ' ').title()}: {nota}")
+                print(f"- {modulo.replace('_', ' ')}: {nota}")
 
-    print("\nEXAMEN INICIAL")
+    print("EXAMEN INICIAL")
     examen = camper.get("examen_inicial")
 
     if not examen:

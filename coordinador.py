@@ -139,22 +139,22 @@ def crud_campers():
                         print("6. Cambiar riesgo")
                         print("7. Salir")
 
-                        opcion_edit = input("Seleccione una opcion: ")
+                        opcion = input("Seleccione una opcion: ")
 
-                        if opcion_edit == "1":
+                        if opcion == "1":
                             c["nombre"] = input("Nuevo nombre: ")
                             c["apellidos"] = input("Nuevos apellidos: ")
-                        elif opcion_edit == "2":
+                        elif opcion == "2":
                             c["direccion"] = input("Nueva direccion: ")
-                        elif opcion_edit == "3":
+                        elif opcion == "3":
                             c["acudiente"] = input("Nuevo acudiente: ")
-                        elif opcion_edit == "4":
+                        elif opcion == "4":
                             c["telefono"] = input("Nuevo telefono: ")
-                        elif opcion_edit == "5":
+                        elif opcion == "5":
                             c["estado"] = input("Nuevo estado: ")
-                        elif opcion_edit == "6":
+                        elif opcion == "6":
                             c["riesgo"] = input("Nuevo riesgo: ")
-                        elif opcion_edit == "7":
+                        elif opcion == "7":
                             print("Saliendo de edicion...")
                             break
                         else:
@@ -170,14 +170,17 @@ def crud_campers():
                 
         elif opcion == "3":
             id_eliminar = input("ID del camper a eliminar: ")
-            nuevos = [c for c in datos["campers"] if c["id"] != id_eliminar]
-
-            if len(nuevos) == len(datos["campers"]):
-                print("Camper no encontrado")
-            else:
-                datos["campers"] = nuevos
-                guardar_campers(datos)
-                print("Camper eliminado correctamente")
+            encontrado = False
+            for i in ["campers"]:
+                if i["id"] == id_eliminar:
+                    datos["campers"].remove(i)
+                    guardar_campers(datos)
+                    print("usuario eliminado") 
+                    encontrado = True
+                    break
+                else:
+                    print("usuario no encontrado")
+                    break
 
 # --------------------------------- 2. CRUD TRAINERS ---------------------------------
 
@@ -245,16 +248,16 @@ def crud_trainers():
                         print("3. Cambiar rutas")
                         print("4. Salir")
 
-                        opcion_edit = input("Seleccione una opcion: ")
+                        opcion= input("Seleccione una opcion: ")
 
-                        if opcion_edit == "1":
+                        if opcion == "1":
                             t["nombre"] = input("Nuevo nombre: ")
-                        elif opcion_edit == "2":
+                        elif opcion == "2":
                             t["horario"] = input("Nuevo horario: ")
-                        elif opcion_edit == "3":
+                        elif opcion == "3":
                             nuevas_rutas = input("Nuevas rutas (separadas por coma): ")
                             t["rutas"] = [r.strip() for r in nuevas_rutas.split(",")]
-                        elif opcion_edit == "4":
+                        elif opcion == "4":
                             print("Saliendo de edicion...")
                             break
                         else:
@@ -270,14 +273,19 @@ def crud_trainers():
 
         elif opcion == "4":
             nombre_eliminar = input("Nombre del trainer a eliminar: ").lower()
-            nuevos = [t for t in datos["profesores"] if t["nombre"].lower() != nombre_eliminar]
+            encontrado = False
 
-            if len(nuevos) == len(datos["profesores"]):
+            for i in datos["profesores"]:
+                if i["nombre"].lower() == nombre_eliminar:
+                    datos["profesores"].remove(i)
+                    guardar_trainers(datos)
+                    print("Trainer eliminado correctamente")
+                    encontrado = True
+                    break
+
+            if not encontrado:
                 print("Trainer no encontrado")
-            else:
-                datos["profesores"] = nuevos
-                guardar_trainers(datos)
-                print("Trainer eliminado correctamente")
+
 
 # --------------------------------- 3. MENU EXAMEN INICIAL ---------------------------------
 
@@ -342,25 +350,18 @@ def registrar_examen_inicial():
     print(f"Registrando examen para: {camper_encontrado['nombre']} {camper_encontrado['apellidos']}")
     
     while True:
-        try:
             nota_teorica = float(input("Nota teorica (0-100): "))
             if 0 <= nota_teorica <= 100:
                 break
             else:
                 print("La nota debe estar entre 0 y 100")
-        except:
-            print("Por favor ingrese un numero valido")
     
     while True:
-        try:
             nota_practica = float(input("Nota practica (0-100): "))
             if 0 <= nota_practica <= 100:
                 break
             else:
                 print("La nota debe estar entre 0 y 100")
-        except:
-            print("Por favor ingrese un numero valido")
-    
     promedio = (nota_teorica + nota_practica) / 2
     
     print("--- RESULTADO ---")
@@ -377,7 +378,7 @@ def registrar_examen_inicial():
     
     if promedio >= 60:
         camper_encontrado["estado"] = "Aprobado"
-        print("APROBADO! El camper puede matricularse")
+        print("APROBADO, El camper puede matricularse")
     else:
         camper_encontrado["estado"] = "Reprobado"
         print("REPROBADO. El camper no aprobo el examen inicial")
@@ -471,17 +472,6 @@ def verificar_disponibilidad_trainer(trainer, salon, horario, datos_rutas):
                 return False
     return True
 
-def generar_correo(camper):
-    nombre = camper["nombre"].lower().replace(" ", "")
-    apellido = camper["apellidos"].lower().replace(" ", "")
-
-    correo = f"{nombre}.{apellido}@campus.com"
-    password = str(random.randint(1000, 9999))
-
-    camper["correo"] = correo
-    camper["password"] = password
-
-
 def matricular_camper():
     print("------ MATRICULAR CAMPER ------")
     
@@ -512,15 +502,12 @@ def matricular_camper():
     
     if not camper:
         print("Camper no encontrado")
-        return
     
     if camper["estado"] != "Aprobado":
         print("Este camper no esta aprobado")
-        return
     
     if camper["ruta"] is not None:
         print("Este camper ya esta matriculado")
-        return
     
     print("--- JORNADA ---")
     print("1. Manana (6am-10am / 10am-2pm)")
@@ -534,7 +521,6 @@ def matricular_camper():
         jornada = "tarde"
     else:
         print("Jornada invalida")
-        return
     
     horarios_disponibles = obtener_horarios_por_jornada(jornada)
     
@@ -604,13 +590,8 @@ def matricular_camper():
                 "backend": None
             }
             
-            if "correo" not in camper:
-                generar_correo(camper)
-
             guardar_rutas(datos_rutas)
             guardar_campers(datos_campers)
-
-
             
             print("MATRICULA EXITOSA (ASIGNACION AUTOMATICA)")
             print(f"Camper: {camper['nombre']} {camper['apellidos']}")
